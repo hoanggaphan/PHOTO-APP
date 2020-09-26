@@ -26,7 +26,7 @@ const ValidationSchema = Yup.object().shape({
   }),
 });
 
-function PhotoForm() {
+function PhotoForm(props) {
   // npm i --save react-select
   const initialValues = {
     title: "",
@@ -38,10 +38,10 @@ function PhotoForm() {
     <Formik
       initialValues={initialValues}
       validationSchema={ValidationSchema}
-      onSubmit={(values) => console.log(values)}
+      onSubmit={props.onSubmit}
     >
       {(formikProps) => {
-        const { values, errors, touched } = formikProps;
+        const { values, errors, touched, isSubmitting } = formikProps;
         console.log({ values, errors, touched });
 
         return (
@@ -68,7 +68,7 @@ function PhotoForm() {
             />
 
             <FormGroup>
-              <Button type="submit" color="primary">
+              <Button disabled={isSubmitting} type="submit" color="primary">
                 Add to album
               </Button>
             </FormGroup>
