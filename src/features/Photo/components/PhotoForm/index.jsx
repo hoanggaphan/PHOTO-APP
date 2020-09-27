@@ -10,6 +10,8 @@ import * as Yup from "yup";
 
 PhotoForm.propTypes = {
   onSubmit: PropTypes.func,
+  initialValues: PropTypes.object.isRequired,
+  isAddMode: PropTypes.bool.isRequired,
 };
 
 PhotoForm.defaultProps = {
@@ -28,11 +30,7 @@ const ValidationSchema = Yup.object().shape({
 
 function PhotoForm(props) {
   // npm i --save react-select
-  const initialValues = {
-    title: "",
-    categoryId: null,
-    photo: "",
-  };
+  const { initialValues, isAddMode } = props;
 
   return (
     <Formik
@@ -68,9 +66,15 @@ function PhotoForm(props) {
             />
 
             <FormGroup>
-              <Button disabled={isSubmitting} type="submit" color="primary">
-                Add to album
-              </Button>
+              {isAddMode ? (
+                <Button disabled={isSubmitting} type="submit" color="primary">
+                  Add to album
+                </Button>
+              ) : (
+                <Button disabled={isSubmitting} type="submit" color="success">
+                  Edit photo
+                </Button>
+              )}
             </FormGroup>
           </Form>
         );
