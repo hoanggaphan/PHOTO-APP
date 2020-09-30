@@ -1,7 +1,11 @@
+import { unwrapResult } from "@reduxjs/toolkit";
 import productApi from "api/productApi";
+import { getMe } from "app/userSlice";
 import SignIn from "features/Auth/pages/SignIn";
 import firebase from "firebase";
+import "firebase/auth";
 import React, { Suspense, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { Button } from "reactstrap";
 import "./App.scss";
@@ -20,7 +24,9 @@ const config = {
 firebase.initializeApp(config);
 
 function App() {
+  // eslint-disable-next-line
   const [productList, setProductList] = useState([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchProductList = async () => {
@@ -49,13 +55,24 @@ function App() {
           console.log("User is not logged in");
           return;
         }
-        console.log("Logged in user: ", user.displayName);
 
-        const token = await user.getIdToken();
-        console.log("Logged in user token: ", token);
+        // Get me when sign in
+        try {
+          const actionResult = await dispatch(getMe());
+          const currentUser = unwrapResult(actionResult);
+          console.log('Logged in user: ', currentUser);
+        } catch (error) {
+          console.log('Failed to login', error);
+        }
+
+        // console.log("Logged in user: ", user.displayName);
+
+        // const token = await user.getIdToken();
+        // console.log("Logged in user token: ", token);
       });
 
     return () => unregisterAuthObserver();
+    // eslint-disable-next-line
   }, []);
 
   const handleButtonClick = async () => {
